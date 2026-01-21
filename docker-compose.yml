@@ -1,6 +1,6 @@
 services:
   db:
-    image: bitnami/mariadb:11.4
+    image: bitnami/mariadb:latest
     container_name: db
     restart: always
     environment:
@@ -14,7 +14,7 @@ services:
       - wp_net
 
   wordpress:
-    image: bitnami/wordpress:6
+    image: bitnami/wordpress:latest
     container_name: wordpress
     restart: always
     depends_on:

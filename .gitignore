@@ -1,6 +1,4 @@
 .env
-.DS_Store
-.idea/
-.vscode/
 *.log
-
+.DS_Store
+node_modules
