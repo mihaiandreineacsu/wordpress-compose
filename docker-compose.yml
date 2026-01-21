@@ -1,0 +1,52 @@
+services:
+  db:
+    image: bitnami/mariadb:11.4
+    container_name: db
+    restart: always
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/bitnami/mariadb
+    networks:
+      - wp_net
+
+  wordpress:
+    image: bitnami/wordpress:6
+    container_name: wordpress
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "${WORDPRESS_HOST_PORT}:8080"
+    environment:
+      # DB connection
+      WORDPRESS_DATABASE_HOST: db
+      WORDPRESS_DATABASE_PORT_NUMBER: "3306"
+      WORDPRESS_DATABASE_NAME: ${MARIADB_DATABASE}
+      WORDPRESS_DATABASE_USER: ${MARIADB_USER}
+      WORDPRESS_DATABASE_PASSWORD: ${MARIADB_PASSWORD}
+
+      # WordPress basic config (no secrets stored in repo; comes from .env)
+      WORDPRESS_BLOG_NAME: ${WORDPRESS_BLOG_NAME}
+      WORDPRESS_USERNAME: ${WORDPRESS_USERNAME}
+      WORDPRESS_PASSWORD: ${WORDPRESS_PASSWORD}
+      WORDPRESS_EMAIL: ${WORDPRESS_EMAIL}
+
+      # Optional but useful defaults
+      WORDPRESS_ENABLE_HTTPS: "no"
+      WORDPRESS_SKIP_BOOTSTRAP: "no"
+    volumes:
+      - wp_data:/bitnami/wordpress
+    networks:
+      - wp_net
+
+volumes:
+  db_data:
+  wp_data:
+
+networks:
+  wp_net:
+    driver: bridge
